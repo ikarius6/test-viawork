@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start --singleRun",
-    "dev": "./node_modules/.bin/webpack-dev-server --config ./webpack/webpack.dev.config.js"
+    "dev": "./node_modules/.bin/webpack-dev-server --config ./webpack/webpack.dev.config.js",
+    "build": "./node_modules/.bin/webpack --config ./webpack/webpack.prod.config.js"
   },
   "author": "Alejandro Omar López Pérez",
   "license": "ISC",
