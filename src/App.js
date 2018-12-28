@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import classNames from 'classnames'
 import s from './App.scss';
 import Jobs from './Jobs';
@@ -14,61 +14,68 @@ export default class App extends Component {
         };
 
         library.add(faSearch);
+        library.add(faSpinner);
+        
+        this.stopLoading = this.stopLoading.bind(this)
     }
 
     handleOnChange (event) {
+        const v = event.target.value;
         this.setState({
-           search: event.target.value 
+            loading: v !== "",
+            search: v 
         });
     }
     
     handleOnFocus () {
         this.setState({
-           expanded: true
+            expanded: true
         });
     }
     
     handleOnBlur () {
         this.setState({
-           search: '',
-           expanded: false
+            search: '',
+            expanded: false
+        });
+    }
+    
+    stopLoading () {
+        this.setState({
+            loading: false
         });
     }
 
     render () {
         const searchClasses = classNames({
-            'input-group mb-2': true,
+            'input-group': true,
             'search-bar': !this.state.expanded,
             'search-bar-expanded': this.state.expanded
         });
+        const searchIcon = classNames({
+            'search': !this.state.loading,
+            'spinner': this.state.loading
+        });
         return (
-            <section>
-                <h1>Autocomplete Search - Test ViaWork</h1>
-                <form>
-                    <div className="col-sm-12 form-horizontal">
-                        <label className="sr-only" htmlFor="buscar">Buscar</label>
-                        <div className={searchClasses}>
-                            <input 
-                                type="text"
-                                className="form-control"
-                                id="buscar"
-                                placeholder="Transaction"
-                                value={this.state.search}
-                                onChange={this.handleOnChange.bind(this)}
-                                onFocus={this.handleOnFocus.bind(this)}
-                                onBlur={this.handleOnBlur.bind(this)}
-                            />
-                            <div className="input-group-append">
-                                <div className="input-group-text">
-                                    <FontAwesomeIcon icon="search" />
-                                </div>
-                            </div>
-                        </div>
+            <form>
+                <div className={searchClasses}>
+                    <input 
+                        type="text"
+                        className="form-control"
+                        placeholder="Search for..."
+                        value={this.state.search}
+                        onChange={this.handleOnChange.bind(this)}
+                        onFocus={this.handleOnFocus.bind(this)}
+                        onBlur={this.handleOnBlur.bind(this)}
+                    />
+                    <div className="input-group-append">
+                        <button className="btn btn-primary" type="button">
+                            <FontAwesomeIcon icon={searchIcon} spin={this.state.loading} />
+                        </button>
                     </div>
-                </form>
-                
-                <Jobs search={this.state.search} />
-            </section>
+                </div>
+                <Jobs search={this.state.search} stopLoading={this.stopLoading} />
+            </form>
         );
     }
 }

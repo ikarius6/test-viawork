@@ -15,17 +15,18 @@ class Jobs extends Component {
             fetch('https://hackers.army/viawork/?s=' + nextProps.search)
             .then(response => response.json())
             .then((jobs) => {
+                this.props.stopLoading();
                 this.setState({ jobs: jobs });
             })
         } else {
-             this.setState({ jobs: [] });
+            this.setState({ jobs: [] });
         }
     }
     
     render () {
         if (this.state.jobs.length > 0) {
             return (
-                <div className="container-fluid">
+                <div id="jobs" className="ml-auto mr-0 mr-md-3">
                     {this.state.jobs.map((job, i)=>{
                         return <Job job={job} key={i} />
                     })}
